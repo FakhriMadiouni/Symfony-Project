@@ -1,0 +1,39 @@
+security:
+    password_hashers:
+        App\Entity\User:
+            algorithm: bcrypt
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        api:
+            pattern: ^/api
+            stateless: true
+            custom_authenticators:
+                - App\Security\TokenAuthenticator
+            entry_point: App\Security\TokenAuthenticator
+
+    access_control:
+        - { path: ^/api/auth/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth/send-verification, roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth/verify-code, roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth/forgot-password, roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth/reset-password, roles: PUBLIC_ACCESS }
+        - { path: ^/api/ads, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/categories, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/locations, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/store/tokens, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/users/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/users/\d+/ads, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/users/\d+/reviews, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/admin, roles: ROLE_STAFF }
+        - { path: ^/api, roles: ROLE_USER }

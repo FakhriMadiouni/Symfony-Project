@@ -1,0 +1,49 @@
+parameters:
+    session_duration: '%env(int:SESSION_DURATION)%'
+    email_verify_expiry: '%env(int:EMAIL_VERIFY_EXPIRY)%'
+    password_reset_expiry: '%env(int:PASSWORD_RESET_EXPIRY)%'
+    avatar_max_size: '%env(int:AVATAR_MAX_SIZE)%'
+    media_img_max_size: '%env(int:MEDIA_IMG_MAX_SIZE)%'
+    media_vid_max_size: '%env(int:MEDIA_VID_MAX_SIZE)%'
+    resend_api_key: '%env(RESEND_API_KEY)%'
+    resend_from_email: '%env(RESEND_FROM_EMAIL)%'
+    resend_from_name: '%env(RESEND_FROM_NAME)%'
+    support_email: '%env(SUPPORT_EMAIL)%'
+    upload_dir: '%kernel.project_dir%/public/uploads'
+    avatar_dir: '%kernel.project_dir%/public/uploads/avatars'
+    media_img_dir: '%kernel.project_dir%/public/uploads/images'
+    media_vid_dir: '%kernel.project_dir%/public/uploads/videos'
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    App\Service\EmailService:
+        arguments:
+            $apiKey: '%resend_api_key%'
+            $fromEmail: '%resend_from_email%'
+            $fromName: '%resend_from_name%'
+            $supportEmail: '%support_email%'
+
+    App\Service\UploadService:
+        arguments:
+            $avatarDir: '%avatar_dir%'
+            $mediaImgDir: '%media_img_dir%'
+            $mediaVidDir: '%media_vid_dir%'
+            $avatarMaxSize: '%avatar_max_size%'
+            $mediaImgMaxSize: '%media_img_max_size%'
+            $mediaVidMaxSize: '%media_vid_max_size%'
+
+    App\Service\AuthService:
+        arguments:
+            $sessionDuration: '%session_duration%'
+            $emailVerifyExpiry: '%email_verify_expiry%'
+            $passwordResetExpiry: '%password_reset_expiry%'
